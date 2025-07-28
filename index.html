@@ -107,65 +107,157 @@
     </div>
   </div>
 
-  <button class="play-button" onclick="playMelody()">▶️</button>
+<button id="play-btn" class="play-button" onclick="playMelody()">▶️</button>
 
-  <script>
-    function playNote(audioCtx, freq, time, duration) {
-      const oscillator = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
+<script>
+  let alreadyPlayed = false;
 
-      oscillator.type = 'square'; // sonido 8-bit
-      oscillator.frequency.setValueAtTime(freq, time);
-      gain.gain.setValueAtTime(0.1, time);
+  function playNote(audioCtx, freq, time, duration) {
+    const oscillator = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
 
-      oscillator.connect(gain);
-      gain.connect(audioCtx.destination);
+    oscillator.type = 'square'; // sonido 8-bit
+    oscillator.frequency.setValueAtTime(freq, time);
+    gain.gain.setValueAtTime(0.1, time);
 
-      oscillator.start(time);
-      oscillator.stop(time + duration);
+    oscillator.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    oscillator.start(time);
+    oscillator.stop(time + duration);
+  }
+
+  function playMelody() {
+    if (alreadyPlayed) return;
+    alreadyPlayed = true;
+
+    // Ocultar botón
+    const playButton = document.getElementById("play-btn");
+    playButton.style.display = "none";
+
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    const audioCtx = new AudioContext();
+
+    const notes = [
+      { note: 264, dur: 0.4 }, { note: 264, dur: 0.4 }, { note: 297, dur: 0.8 },
+      { note: 264, dur: 0.8 }, { note: 352, dur: 0.8 }, { note: 330, dur: 1.2 },
+      { note: 264, dur: 0.4 }, { note: 264, dur: 0.4 }, { note: 297, dur: 0.8 },
+      { note: 264, dur: 0.8 }, { note: 396, dur: 0.8 }, { note: 352, dur: 1.2 },
+      { note: 264, dur: 0.4 }, { note: 264, dur: 0.4 }, { note: 528, dur: 0.8 },
+      { note: 440, dur: 0.8 }, { note: 352, dur: 0.8 }, { note: 330, dur: 0.8 },
+      { note: 297, dur: 1.2 }, { note: 466, dur: 0.4 }, { note: 466, dur: 0.4 },
+      { note: 440, dur: 0.8 }, { note: 352, dur: 0.8 }, { note: 396, dur: 0.8 },
+      { note: 352, dur: 1.2 }
+    ];
+
+    let time = audioCtx.currentTime;
+    for (let i = 0; i < notes.length; i++) {
+      playNote(audioCtx, notes[i].note, time, notes[i].dur);
+      time += notes[i].dur + 0.05;
     }
+  }
+</script>
+<!-- 🎁 Botón de regalo -->
+<button id="btn-regalo" onclick="mostrarRegalo()">🎁</button>
 
-    function playMelody() {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      const audioCtx = new AudioContext();
+<!-- 🎁 Regalo grande + mensaje -->
+<div id="regalo-contenedor" onclick="tocarRegalo()">
+  <div id="regalo-grande">🎁</div>
+  <div id="mensaje-toques">✨ ¡Tocalo 3 veces para abrirlo!</div>
+</div>
 
-      const notes = [
-        { note: 264, dur: 0.4 },
-        { note: 264, dur: 0.4 },
-        { note: 297, dur: 0.8 },
-        { note: 264, dur: 0.8 },
-        { note: 352, dur: 0.8 },
-        { note: 330, dur: 1.2 },
+<!-- 🐶 Foto sorpresa de Max -->
+<img id="foto-max" src="max.jpg" alt="Max el perrito">
 
-        { note: 264, dur: 0.4 },
-        { note: 264, dur: 0.4 },
-        { note: 297, dur: 0.8 },
-        { note: 264, dur: 0.8 },
-        { note: 396, dur: 0.8 },
-        { note: 352, dur: 1.2 },
+<!-- 🎨 Estilos -->
+<style>
+  #btn-regalo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    font-size: 2rem;
+    background-color: #0050aa;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px;
+    cursor: pointer;
+    box-shadow: 0 0 10px #0004;
+    transition: transform 0.2s;
+    z-index: 10;
+  }
 
-        { note: 264, dur: 0.4 },
-        { note: 264, dur: 0.4 },
-        { note: 528, dur: 0.8 },
-        { note: 440, dur: 0.8 },
-        { note: 352, dur: 0.8 },
-        { note: 330, dur: 0.8 },
-        { note: 297, dur: 1.2 },
+  #btn-regalo:hover {
+    transform: scale(1.1);
+  }
 
-        { note: 466, dur: 0.4 },
-        { note: 466, dur: 0.4 },
-        { note: 440, dur: 0.8 },
-        { note: 352, dur: 0.8 },
-        { note: 396, dur: 0.8 },
-        { note: 352, dur: 1.2 }
-      ];
+  #regalo-contenedor {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 20;
+    cursor: pointer;
+  }
 
-      let time = audioCtx.currentTime;
-      for (let i = 0; i < notes.length; i++) {
-        playNote(audioCtx, notes[i].note, time, notes[i].dur);
-        time += notes[i].dur + 0.05;
-      }
+  #regalo-grande {
+    font-size: 6rem;
+    animation: saltito 1s infinite;
+  }
+
+  #mensaje-toques {
+    margin-top: 10px;
+    font-size: 1.1rem;
+    color: #ffffff;
+    background: rgba(0, 0, 100, 0.4);
+    padding: 5px 10px;
+    border-radius: 10px;
+    font-family: sans-serif;
+    animation: parpadeo 1s infinite;
+  }
+
+  #foto-max {
+    display: none;
+    max-width: 80%;
+    max-height: 60vh;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 15px;
+    box-shadow: 0 0 15px #000a;
+    z-index: 30;
+  }
+
+  @keyframes saltito {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes parpadeo {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+</style>
+
+<!-- 🧠 Script -->
+<script>
+  let toques = 0;
+
+  function mostrarRegalo() {
+    document.getElementById("regalo-contenedor").style.display = "block";
+    document.getElementById("btn-regalo").style.display = "none";
+  }
+
+  function tocarRegalo() {
+    toques++;
+    if (toques >= 3) {
+      document.getElementById("regalo-contenedor").style.display = "none";
+      document.getElementById("foto-max").style.display = "block";
     }
-  </script>
+  }
+</script>
 </body>
 </html>
