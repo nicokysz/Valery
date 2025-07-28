@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎉 ¡Feliz cumple Valery! 🎉</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0077ff, #66ccff);
+      color: #222;
+      font-family: 'Nunito', sans-serif;
+      text-align: center;
+      padding: 20px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      font-size: 1.8em;
+      margin: 20px 0 10px;
+    }
+
+    .mensaje {
+      font-size: 1.2em;
+      margin: 10px auto 30px;
+      max-width: 400px;
+    }
+
+    .ascii-container {
+      overflow-x: auto;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    .ascii-art {
+      white-space: pre;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 13px;
+      background: rgba(255,255,255,0.9);
+      padding: 15px;
+      border-radius: 10px;
+      display: inline-block;
+      text-align: left;
+    }
+
+    .emoji {
+      font-size: 2em;
+      margin-bottom: 10px;
+    }
+
+    .play-button {
+      margin-top: 25px;
+      font-size: 2em;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: white;
+      transition: transform 0.2s;
+    }
+
+    .play-button:hover {
+      transform: scale(1.2);
+    }
+  </style>
+</head>
+<body>
+  <h1>🎂 ¡Feliz cumple Valery! 🎂</h1>
+  <div class="emoji">🎁🎁🎁🎁</div>
+
+  <div class="mensaje">
+    Aunque no la conozca<br />
+    hace mucho, la quiero <3.<br />
+    Espero que la pase de <br />
+    lo mejor en su día.<br />
+    18 años, ya pronto se jubila <\3
+  </div>
+
+  <div class="ascii-container">
+    <div class="ascii-art">
+<pre>
+                .-"-.
+   *       (   +  /     \ . )
+        )   )     |#    |  (   *  
+    .  (      .    \___/         .
+   +   .-"-.    *   /^    +  (
+      /     \  )   (  .-"-.    )  +
+   .  |#    | (    * /     \  (  )
+       \___/   )  (  |#    |    (  '
+    *   /^         )  \___/
+       (    *  '  (     ^\   *  '
+   .    \     , , , , , ' \       + 
+         )    | | | | |    ) .
+     *    . @%@%@%@%@%@%@ (    )
+     (      {   happy   }  \  (   *
+      ) *   { birthday! }   )    (
+     (    @%@%@%@%@%@%@%@%@       ) '
+   +      {               }  *   (
+          {     VALERY    }    .    )
+          {               }        (
+  *      @%@%@%@%@%@%@%@%@%@    +
+</pre>
+    </div>
+  </div>
+
+  <button class="play-button" onclick="playMelody()">▶️</button>
+
+  <script>
+    function playNote(audioCtx, freq, time, duration) {
+      const oscillator = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      oscillator.type = 'square'; // sonido 8-bit
+      oscillator.frequency.setValueAtTime(freq, time);
+      gain.gain.setValueAtTime(0.1, time);
+
+      oscillator.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      oscillator.start(time);
+      oscillator.stop(time + duration);
+    }
+
+    function playMelody() {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      const audioCtx = new AudioContext();
+
+      const notes = [
+        { note: 264, dur: 0.4 },
+        { note: 264, dur: 0.4 },
+        { note: 297, dur: 0.8 },
+        { note: 264, dur: 0.8 },
+        { note: 352, dur: 0.8 },
+        { note: 330, dur: 1.2 },
+
+        { note: 264, dur: 0.4 },
+        { note: 264, dur: 0.4 },
+        { note: 297, dur: 0.8 },
+        { note: 264, dur: 0.8 },
+        { note: 396, dur: 0.8 },
+        { note: 352, dur: 1.2 },
+
+        { note: 264, dur: 0.4 },
+        { note: 264, dur: 0.4 },
+        { note: 528, dur: 0.8 },
+        { note: 440, dur: 0.8 },
+        { note: 352, dur: 0.8 },
+        { note: 330, dur: 0.8 },
+        { note: 297, dur: 1.2 },
+
+        { note: 466, dur: 0.4 },
+        { note: 466, dur: 0.4 },
+        { note: 440, dur: 0.8 },
+        { note: 352, dur: 0.8 },
+        { note: 396, dur: 0.8 },
+        { note: 352, dur: 1.2 }
+      ];
+
+      let time = audioCtx.currentTime;
+      for (let i = 0; i < notes.length; i++) {
+        playNote(audioCtx, notes[i].note, time, notes[i].dur);
+        time += notes[i].dur + 0.05;
+      }
+    }
+  </script>
+</body>
+</html>
